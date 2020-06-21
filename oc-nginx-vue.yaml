@@ -1,0 +1,70 @@
+kind: DeploymentConfig
+apiVersion: apps.openshift.io/v1
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftNewApp
+  name: nginx-vue
+  namespace: cc-uc-2-wear-mask
+  labels:
+    app: nginx-vue
+spec:
+  strategy:
+    type: Rolling
+    rollingParams:
+      updatePeriodSeconds: 1
+      intervalSeconds: 1
+      timeoutSeconds: 600
+      maxUnavailable: 25%
+      maxSurge: 25%
+    resources:
+      limits:
+        cpu: 100m
+        memory: 100Mi
+      requests:
+        cpu: 100m
+        memory: 100Mi
+    activeDeadlineSeconds: 21600
+  triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - nginx-vue
+        from:
+          kind: ImageStreamTag
+          namespace: cc-uc-2-wear-mask
+          name: 'nginx-vue'
+  replicas: 1
+  revisionHistoryLimit: 10
+  test: false
+  selector:
+    app: nginx-vue
+    deploymentconfig: nginx-vue
+  template:
+    metadata:
+      labels:
+        app: nginx-vue
+        deploymentconfig: nginx-vue
+      annotations:
+        openshift.io/generated-by: OpenShiftNewApp
+    spec:
+      containers:
+        - name: nginx-vue
+          image: >-
+            docker.io/liker163/health-ui
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 100m
+              memory: 100Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
