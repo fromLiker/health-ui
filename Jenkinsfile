@@ -6,15 +6,16 @@ pipeline {
     IMAGENAME = "torder"
   }
   stages {
-    stage('maven Build') {
+    stage('npm Build') {
       agent {
         docker {
-          image 'maven:3-alpine'
-          args '-v /root/.m2:/root/.m2'
+          image 'node:13'
         }
       }
       steps {
-        // sh 'mvn -B -DskipTests clean package'
+        sh 'npm install -g nrm'
+        sh 'nrm use npmMirror'
+        sh 'npm install'
         sh 'npm run build'
       }
     }
