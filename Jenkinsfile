@@ -14,9 +14,8 @@ pipeline {
         }
       }
       steps {
-        sh 'mvn -B -DskipTests clean package'
-        // sh 'mvn package -Dmaven.test.skip=true'
-        // sh 'mvn clean package'
+        // sh 'mvn -B -DskipTests clean package'
+        sh 'npm run build'
       }
     }
 
